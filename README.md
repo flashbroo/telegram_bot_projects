@@ -1,114 +1,879 @@
-# Telegram Forward Bot (Polling) 1.BOT NAME(@AUTOMATEDFORWARDERBOT) or YOU CAN SEARCH IN FLASH's @BOTFATHER
+✅ README.md — Telegram Forwarder Bot with Subscription System
 
-## Setup (Windows / Termux / VPS)
-1. Install Python 3.11.
-2. Clone this folder into telegram_forward_bot/.
-3. Edit config.py and set BOT_TOKEN and ADMIN_ID.
-4. Create a venv and install requirements:
+A fully asynchronous Python Telegram bot built using python-telegram-bot v20+.
+It supports:
 
+Auto-forwarding of channel posts to user-defined target channels
 
-## HOW TO RUN BOT AND CMD 
-## Quick Tests
-- /start → welcome
-- /menu → inline menu
-- /list_mappings → show mappings
-- /add_mapping @source @target → add mapping
-- Post into source channel (bot must be able to see posts) → see forwarded message in target
+Multi-target forwarding
 
-## Troubleshooting
-- ModuleNotFoundError: No module named 'telegram':
+Per-user mappings
 
-Here is a clean, professional, copy-paste-ready README.md for your Telegram Forwarding Bot project — including:
+Subscription system (Basic / Premium / Yearly)
 
-✔ Full setup
-✔ Windows + Termux instructions
-✔ All user/admin commands
-✔ Examples for each command
-✔ Troubleshooting
-✔ How multi-forward works
+Admin panel (manual activate, broadcast, export logs, grant free access)
+
+Multiple payment methods (UPI QR + Screenshot, Telegram Payments, PayPal)
+
+SQLite (default) or PostgreSQL (optional for production)
+
+.env configuration for sensitive credentials
+
 
 
 ---
 
-📌 Telegram Forward Bot — README
+🚀 Features
 
-A complete Telegram bot for auto-forwarding messages from channels to multiple channels, with subscription system, paid plans, watermarking, admin controls, and SQLite storage.
+User Features
 
-Works on:
+/add_mapping <source> <target> — forward from channel → channel
 
-Windows
+/list_mappings — view mappings
 
-Android (Termux)
+/remove_mapping <id> — delete mapping
 
-Any VPS (Ubuntu/Debian)
+/list_plans — see subscription plans
+
+/buy <plan> — choose payment method
+
+UPI QR auto-generated
+
+PayPal (optional)
+
+Telegram Payments (optional)
+
+Upload screenshot → admin receives alert
+
+Subscription activates automatically after payment
 
 
-Uses:
-Python 3.11, python-telegram-bot v20.x, SQLite, async architecture
+Admin Features
+
+/grant_free <user_id>
+
+/revoke_free <user_id>
+
+/manual_activate <user_id> <plan_key>
+
+/list_subscribers
+
+/list_users
+
+/export_payments
+
+/broadcast <text>
+
+
+Database
+
+Default: SQLite (bot.db)
+
+Optional: PostgreSQL for higher scale
+
 
 
 ---
 
-📂 Project Structure
+📁 Project Structure
 
-telegram_forward_bot/
+telegram_bot_projects/
+│
 ├── bot.py
 ├── config.py
-├── db.py
-├── utils.py
-├── users.py
-├── subscriptions.py
 ├── payments_telegram.py
-├── mappings.py
 ├── forwarder.py
+├── mappings.py
+├── subscriptions.py
 ├── admin_cmds.py
-├── ui.py
+├── users.py
+├── utils.py
 ├── branding.py
+│
+├── db/
+│   ├── __init__.py
+│   ├── engine.py
+│   ├── models.py
+│   ├── crud.py
+│
+├── .env
 ├── requirements.txt
 └── README.md
 
 
 ---
 
-🚀 1. Installation
+🧩 Requirements
 
-Windows Setup
+python-telegram-bot==20.3
+SQLAlchemy
+python-dotenv
+qrcode
+pillow
+psycopg2-binary   # only needed if using PostgreSQL
 
-1. Install Python 3.11
-https://www.python.org/downloads/release/python-3110/
+Install:
 
-
-2. Open CMD inside your bot folder:
-
-
-
-cd telegram_forward_bot
-
-3. Install requirements:
-
-
-
-py -3.11 -m pip install -r requirements.txt
-
-4. Set your bot token & admin ID inside config.py.
-
-
-5. Run:
-
-
-
-py -3.11 bot.py
+pip install -r requirements.txt
 
 
 ---
 
-Android (Termux)
+🔧 Configuration (.env)
 
-1. Install Termux from F-Droid (recommended).
+Create a file named .env in the project root:
+
+BOT_TOKEN=YOUR_TELEGRAM_BOT_TOKEN
+ADMIN_ID=717813316
+ADMIN_USERNAME=flash_bro
+CONTACT_USERNAME=flash_bro
+
+UPI_ID=flashbro@ybl
+PAYPAL_LINK=
+TELEGRAM_PROVIDER_TOKEN=
+
+DATABASE_URL=
+DB_PATH=bot.db
+
+FREE_MODE=0
 
 
-2. Update packages:
+---
 
+▶️ Running the Bot (Local PC / Windows)
+
+Step 1: Install requirements
+
+pip install -r requirements.txt
+
+Step 2: Run bot
+
+python bot.py
+
+✔️ Your bot is now running
+✔️ Keep this window open
+
+
+---
+
+📡 Deployment Guide
+
+Below are three deployment methods — choose one.
+
+
+---
+
+🚀 METHOD 1 — Free Deployment (Render.com)
+
+(Best free method, works with SQLite or PostgreSQL)
+
+Step 1: Push your code to GitHub
+
+Your repo:
+
+https://github.com/flashbroo/telegram_bot_projects
+
+Step 2: Create Render.com project
+
+1. Go to https://render.com
+
+
+2. Click New > Web Service
+
+
+3. Select your GitHub repo
+
+
+4. Choose:
+
+Runtime: Python 3.11
+
+Start command:
+
+
+
+
+python bot.py
+
+5. In Environment Variables, add:
+
+
+
+BOT_TOKEN=xxxxx
+ADMIN_ID=717813316
+UPI_ID=flashbro@ybl
+DB_PATH=bot.db
+FREE_MODE=0
+
+6. Deploy.
+
+
+
+✔ Notes
+
+Render free tier sleeps after inactivity
+
+Works perfectly for Telegram bots
+
+SQLite works, but PostgreSQL recommended if heavy traffic
+
+
+
+---
+
+🚀 METHOD 2 — Railway.app (Free + Best performance)
+
+Steps:
+
+1. Visit https://railway.app
+
+
+2. New Project → Deploy from GitHub
+
+
+3. Add environment variables
+
+
+4. Start command: python bot.py
+
+
+5. (Optional) Add PostgreSQL add-on
+
+
+6. Put PostgreSQL URL in .env:
+
+
+
+DATABASE_URL=postgresql://user:pass@host/dbname
+
+
+---
+
+🚀 METHOD 3 — VPS (DigitalOcean / Linode / Hetzner)
+
+(Best performance, recommended when 10,000+ users)
+
+Steps:
+
+1. Buy VPS (1GB RAM is enough)
+
+
+2. SSH into server
+
+
+3. Install Python:
+
+
+
+sudo apt update
+sudo apt install python3 python3-pip
+
+4. Clone your repo:
+
+
+
+git clone https://github.com/flashbroo/telegram_bot_projects
+cd telegram_bot_projects
+
+5. Install dependencies:
+
+
+
+pip3 install -r requirements.txt
+
+6. Create .env file:
+
+
+
+nano .env
+
+7. Start bot:
+
+
+
+python3 bot.py
+
+(Optional) Run bot in background:
+
+sudo apt install screen
+screen -S bot
+python3 bot.py
+
+Detach (CTRL + A then CTRL + D)
+
+
+---
+
+📌 Important Notes on SQLite vs PostgreSQL
+
+Feature	SQLite	PostgreSQL
+
+Max safe RPS	~3–5 writes/sec	1000+
+Recommended for	small bots	large bots
+Setup difficulty	easy	medium
+Works on free hosting?	yes	yes
+
+
+Telegram bots with < 50k users = SQLite fine
+Heavy subscription bots = PostgreSQL recommended
+
+
+---
+
+🧪 Testing Checklist
+
+Task	Command	Expected
+
+See plans	/list_plans	List appears
+Buy plan	/buy basic	Payment menu appears
+UPI proof	send photo with caption proof basic	Admin receives screenshot
+Add mapping	/add_mapping @src @target	“Mapping added”
+Channel forwarding	Post in source channel	Message forwarded
+Manual activate	admin: /manual_activate 717813316 basic	User receives activation message
+Check status	/status	Shows expiry date
+Broadcast	/broadcast hello	All users receive message
+
+
+
+---
+FREE_MODE=0
+
+
+---
+
+▶️ Running the Bot (Local PC / Windows)
+
+Step 1: Install requirements
+
+pip install -r requirements.txt
+
+Step 2: Run bot
+
+python bot.py
+
+✔️ Your bot is now running
+✔️ Keep this window open
+
+
+---
+
+📡 Deployment Guide
+
+Below are three deployment methods — choose one.
+
+
+---
+
+🚀 METHOD 1 — Free Deployment (Render.com)
+
+(Best free method, works with SQLite or PostgreSQL)
+
+Step 1: Push your code to GitHub
+
+Your repo:
+
+https://github.com/flashbroo/telegram_bot_projects
+
+Step 2: Create Render.com project
+
+1. Go to https://render.com
+
+
+2. Click New > Web Service
+
+
+3. Select your GitHub repo
+
+
+4. Choose:
+
+Runtime: Python 3.11
+
+Start command:
+
+
+
+
+python bot.py
+
+5. In Environment Variables, add:
+
+
+
+BOT_TOKEN=xxxxx
+ADMIN_ID=717813316
+UPI_ID=flashbro@ybl
+DB_PATH=bot.db
+FREE_MODE=0
+
+6. Deploy.
+
+
+
+✔ Notes
+
+Render free tier sleeps after inactivity
+
+Works perfectly for Telegram bots
+
+SQLite works, but PostgreSQL recommended if heavy traffic
+
+
+
+---
+
+🚀 METHOD 2 — Railway.app (Free + Best performance)
+
+Steps:
+
+1. Visit https://railway.app
+
+
+2. New Project → Deploy from GitHub
+
+
+3. Add environment variables
+
+
+4. Start command: python bot.py
+
+
+5. (Optional) Add PostgreSQL add-on
+
+
+6. Put PostgreSQL URL in .env:
+
+
+
+DATABASE_URL=postgresql://user:pass@host/dbname
+
+
+---
+
+🚀 METHOD 3 — VPS (DigitalOcean / Linode / Hetzner)
+
+(Best performance, recommended when 10,000+ users)
+
+Steps:
+
+1. Buy VPS (1GB RAM is enough)
+
+
+2. SSH into server
+
+
+3. Install Python:
+
+
+
+sudo apt update
+sudo apt install python3 python3-pip
+
+4. Clone your repo:
+
+
+
+git clone https://github.com/flashbroo/telegram_bot_projects
+cd telegram_bot_projects
+
+5. Install dependencies:
+
+
+
+pip3 install -r requirements.txt
+
+6. Create .env file:
+
+
+
+nano .env
+
+7. Start bot:
+
+
+
+python3 bot.py
+
+(Optional) Run bot in background:
+
+sudo apt install screen
+screen -S bot
+python3 bot.py
+
+Detach (CTRL + A then CTRL + D)
+
+
+---
+
+📌 Important Notes on SQLite vs PostgreSQL
+
+Feature	SQLite	PostgreSQL
+
+Max safe RPS	~3–5 writes/sec	1000+
+Recommended for	small bots	large bots
+Setup difficulty	easy	medium
+Works on free hosting?	yes	yes
+
+
+Telegram bots with < 50k users = SQLite fine
+Heavy subscription bots = PostgreSQL recommended
+
+
+---
+
+🧪 Testing Checklist
+
+Task	Command	Expected
+
+See plans	/list_plans	List appears
+Buy plan	/buy basic	Payment menu appears
+UPI proof	send photo with caption proof basic	Admin receives screenshot
+Add mapping	/add_mapping @src @target	“Mapping added”
+Channel forwarding	Post in source channel	Message forwarded
+Manual activate	admin: /manual_activate 717813316 basic	User receives activation message
+Check status	/status	Shows expiry date
+Broadcast	/broadcast hello	All users receive message
+
+
+
+---✅ README.md — Telegram Forwarder Bot with Subscription System
+
+A fully asynchronous Python Telegram bot built using python-telegram-bot v20+.
+It supports:
+
+Auto-forwarding of channel posts to user-defined target channels
+
+Multi-target forwarding
+
+Per-user mappings
+
+Subscription system (Basic / Premium / Yearly)
+
+Admin panel (manual activate, broadcast, export logs, grant free access)
+
+Multiple payment methods (UPI QR + Screenshot, Telegram Payments, PayPal)
+
+SQLite (default) or PostgreSQL (optional for production)
+
+.env configuration for sensitive credentials
+
+
+
+---
+
+🚀 Features
+
+User Features
+
+/add_mapping <source> <target> — forward from channel → channel
+
+/list_mappings — view mappings
+
+/remove_mapping <id> — delete mapping
+
+/list_plans — see subscription plans
+
+/buy <plan> — choose payment method
+
+UPI QR auto-generated
+
+PayPal (optional)
+
+Telegram Payments (optional)
+
+Upload screenshot → admin receives alert
+
+Subscription activates automatically after payment
+
+
+Admin Features
+
+/grant_free <user_id>
+
+/revoke_free <user_id>
+
+/manual_activate <user_id> <plan_key>
+
+/list_subscribers
+
+/list_users
+
+/export_payments
+
+/broadcast <text>
+
+
+Database
+
+Default: SQLite (bot.db)
+
+Optional: PostgreSQL for higher scale
+
+
+
+---
+
+📁 Project Structure
+
+telegram_bot_projects/
+│
+├── bot.py
+├── config.py
+├── payments_telegram.py
+├── forwarder.py
+├── mappings.py
+├── subscriptions.py
+├── admin_cmds.py
+├── users.py
+├── utils.py
+├── branding.py
+│
+├── db/
+│   ├── __init__.py
+│   ├── engine.py
+│   ├── models.py
+│   ├── crud.py
+│
+├── .env
+├── requirements.txt
+└── README.md
+
+
+---
+
+🧩 Requirements
+
+python-telegram-bot==20.3
+SQLAlchemy
+python-dotenv
+qrcode
+pillow
+psycopg2-binary   # only needed if using PostgreSQL
+
+Install:
+
+pip install -r requirements.txt
+
+
+---
+
+🔧 Configuration (.env)
+
+Create a file named .env in the project root:
+
+BOT_TOKEN=YOUR_TELEGRAM_BOT_TOKEN
+ADMIN_ID=717813316
+ADMIN_USERNAME=flash_bro
+CONTACT_USERNAME=flash_bro
+
+UPI_ID=flashbro@ybl
+PAYPAL_LINK=
+TELEGRAM_PROVIDER_TOKEN=
+
+DATABASE_URL=
+DB_PATH=bot.db
+
+FREE_MODE=0
+
+
+---
+
+▶️ Running the Bot (Local PC / Windows)
+
+Step 1: Install requirements
+
+pip install -r requirements.txt
+
+Step 2: Run bot
+
+python bot.py
+
+✔️ Your bot is now running
+✔️ Keep this window open
+
+
+---
+
+📡 Deployment Guide
+
+Below are three deployment methods — choose one.
+
+
+---
+
+🚀 METHOD 1 — Free Deployment (Render.com)
+
+(Best free method, works with SQLite or PostgreSQL)
+
+Step 1: Push your code to GitHub
+
+Your repo:
+
+https://github.com/flashbroo/telegram_bot_projects
+
+Step 2: Create Render.com project
+
+1. Go to https://render.com
+
+
+2. Click New > Web Service
+
+
+3. Select your GitHub repo
+
+
+4. Choose:
+
+Runtime: Python 3.11
+
+Start command:
+
+
+
+
+python bot.py
+
+5. In Environment Variables, add:
+
+
+
+BOT_TOKEN=xxxxx
+ADMIN_ID=717813316
+UPI_ID=flashbro@ybl
+DB_PATH=bot.db
+FREE_MODE=0
+
+6. Deploy.
+
+
+
+✔ Notes
+
+Render free tier sleeps after inactivity
+
+Works perfectly for Telegram bots
+
+SQLite works, but PostgreSQL recommended if heavy traffic
+
+
+
+---
+
+🚀 METHOD 2 — Railway.app (Free + Best performance)
+
+Steps:
+
+1. Visit https://railway.app
+
+
+2. New Project → Deploy from GitHub
+
+
+3. Add environment variables
+
+
+4. Start command: python bot.py
+
+
+5. (Optional) Add PostgreSQL add-on
+
+
+6. Put PostgreSQL URL in .env:
+
+
+
+DATABASE_URL=postgresql://user:pass@host/dbname
+
+
+---
+
+🚀 METHOD 3 — VPS (DigitalOcean / Linode / Hetzner)
+
+(Best performance, recommended when 10,000+ users)
+
+Steps:
+
+1. Buy VPS (1GB RAM is enough)
+
+
+2. SSH into server
+
+
+3. Install Python:
+
+
+
+sudo apt update
+sudo apt install python3 python3-pip
+
+4. Clone your repo:
+
+
+
+git clone https://github.com/flashbroo/telegram_bot_projects
+cd telegram_bot_projects
+
+5. Install dependencies:
+
+
+
+pip3 install -r requirements.txt
+
+6. Create .env file:
+
+
+
+nano .env
+
+7. Start bot:
+
+
+
+python3 bot.py
+
+(Optional) Run bot in background:
+
+sudo apt install screen
+screen -S bot
+python3 bot.py
+
+Detach (CTRL + A then CTRL + D)
+
+
+---
+
+📌 Important Notes on SQLite vs PostgreSQL
+
+Feature	SQLite	PostgreSQL
+
+Max safe RPS	~3–5 writes/sec	1000+
+Recommended for	small bots	large bots
+Setup difficulty	easy	medium
+Works on free hosting?	yes	yes
+
+
+Telegram bots with < 50k users = SQLite fine
+Heavy subscription bots = PostgreSQL recommended
+
+
+---
+
+🧪 Testing Checklist
+
+Task	Command	Expected
+
+See plans	/list_plans	List appears
+Buy plan	/buy basic	Payment menu appears
+UPI proof	send photo with caption proof basic	Admin receives screenshot
+Add mapping	/add_mapping @src @target	“Mapping added”
+Channel forwarding	Post in source channel	Message forwarded
+Manual activate	admin: /manual_activate 717813316 basic	User receives activation message
+Check status	/status	Shows expiry date
+Broadcast	/broadcast hello	All users receive message
+
+
+
+---
 
 
 pkg update && pkg upgrade
@@ -635,5 +1400,6 @@ class Settings:
 settings = Settings()
 
 
----#   t e l e g r a m _ f o r w a r d e r  
+---#   t e l e g r a m _ f o r w a r d e r 
+ 
  
