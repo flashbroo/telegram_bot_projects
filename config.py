@@ -1,57 +1,49 @@
-# --- Edit these values ---
-BOT_TOKEN = "8439266642:AAFzBEKL5pt_L6NFMyTvQQQaXfh0BcDumBc"
+import os
+from dotenv import load_dotenv
 
-ADMIN_ID = 717813316  # your Telegram user id (int)
+load_dotenv()
 
-DB_PATH = "bot.db"    # sqlite DB file
+# -------------------- BASIC CONFIG --------------------
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))      # MUST be integer
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "")
 
-DEFAULT_CURRENCY = "INR"  # used in invoices
+# -------------------- PAYMENT CONFIG --------------------
+UPI_ID = os.getenv("UPI_ID", "")                  # e.g. flashbro@ybl
+PAYPAL_LINK = os.getenv("PAYPAL_LINK", "")        # PayPal.me/xyz
+TELEGRAM_PROVIDER_TOKEN = os.getenv("TELEGRAM_PROVIDER_TOKEN", "")
 
-# Forward logs file path
-FORWARD_LOG_FILE = "logs/forward.log"
+# -------------------- DATABASE --------------------
+DB_PATH = os.getenv("DB_PATH", "bot.db")
 
-#UPI and PayPal Settings
-UPI_ID = "flashbro@ybl"
-UPI_NAME = "Flash Bro"
-PAYPAL_LINK = ""
-ADMIN_USERNAME = "flash_bro"
+# FREE MODE (1 = everyone allowed)
+FREE_MODE = int(os.getenv("FREE_MODE", "0"))
+
+# Logs (optional)
+FORWARD_LOG_FILE = "forward_logs.txt"
 
 
-#Enable Upi for Payment
-ENABLE_UPI= True
-
-# PLANS (canonical)
+# -------------------- PLANS (ONLY EDIT HERE!) --------------------
 PLANS = {
     "basic": {
-        "name": "Basic",
-        "price": 60,
+        "name": "Basic Subscription",
+        "prices": {"INR": 60, "USD": 1},
         "currency": "INR",
-        "paypal_price_usd": 10,            # NEW
         "duration_days": 30,
-        "features": "Text only",
+        "features": "Basic forwarding (text+media)"
     },
     "premium": {
-        "name": "Premium",
-        "price": 120,
+        "name": "Premium Monthly",
+        "prices": {"INR": 120, "USD": 3},
         "currency": "INR",
-        "paypal_price_usd": 20,            # NEW
         "duration_days": 30,
-        "features": "All Media",
+        "features": "Full forwarding + filters"
     },
     "premium_yearly": {
         "name": "Premium Yearly",
-        "price": 999,
+        "prices": {"INR": 1200, "USD": 30},
         "currency": "INR",
-        "paypal_price_usd": 150,           # NEW
         "duration_days": 365,
-        "features": "All Media + Yearly",
+        "features": "All premium features for 1 year"
     }
 }
-
-#DEFAULT_TARGETS = ["@your_target_channel"]
-FREE_MODE = False  # if True, everyone can use the bot (runtime toggle via admin)
-
-REQUIRED_CHANNELS = ["@flashbro_bot_updates"] 
-
-# Payment provider payload - for Telegram Payments set provider token here (from BotFather instructions)
-#TELEGRAM_PROVIDER_TOKEN = ""  # leave empty if not using telegram payments
